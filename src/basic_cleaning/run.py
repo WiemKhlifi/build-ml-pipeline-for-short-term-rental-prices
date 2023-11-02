@@ -17,21 +17,26 @@ def go(args):
     run = wandb.init(job_type="basic_cleaning")
     run.config.update(args)
 
-    # Download input artifact. This will also log that this script is using this
-    # particular version of the artifact
-    logger.info("Downloading the artifact.")
+    # Download input artifact. This will also log that this script is using
+    # this particular version of the artifact
+    logger.info("Downloading artifact")
     artifact_local_path = run.use_artifact(args.input_artifact).file()
     df = pd.read_csv(artifact_local_path)
 
-    logger.info("Outliers were dropped from the price column successfully")
+    # Drop outliers
+    logger.info("Dropping outliers in the price column")
     idx = df['price'].between(args.min_price, args.max_price)
     df = df[idx].copy()
 
-    # Convert the column "last_review" to datetime.
+    # Convert last_review to datetime
     df['last_review'] = pd.to_datetime(df['last_review'])
 
+    # Restrict long and lat
+    idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
+    df = df[idx].copy()
+
     # Save the results to a CSV file
-    logger.info("The results were saved to CSV.")
+    logger.info("Save the results to CSV")
     df.to_csv(args.output_artifact, index=False)
 
     # Build artifact
@@ -41,7 +46,7 @@ def go(args):
         description=args.output_description,
     )
 
-    logger.info("Logging the artifact: clean_sample.csv")
+    logger.info("Log artifact: clean_sample.csv")
     artifact.add_file(args.output_artifact)
     run.log_artifact(artifact)
 
@@ -60,14 +65,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_artifact",
         type=str,
-        help="Name of the clean artifact",
+        help="Clean artifact Name",
         required=True
     )
 
     parser.add_argument(
         "--output_type",
         type=str,
-        help="clean_sample",
+        help="The clean_sample",
         required=True
     )
 
