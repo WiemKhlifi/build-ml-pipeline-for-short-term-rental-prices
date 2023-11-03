@@ -84,14 +84,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--min_price",
         type=float,
-        help="Min price considered for the prediction column",
+        help="Minimum price value to filter the dataset. Rows with 'price' values less than this threshold will be removed.",
         required=True
     )
 
     parser.add_argument(
         "--max_price",
         type=float,
-        help="Max price considered for the prediction column",
+        help="Maximum price value to filter the dataset. Rows with 'price' values greater than this threshold will be removed.",
         required=True
     )
 

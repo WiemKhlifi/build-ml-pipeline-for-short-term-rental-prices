@@ -23,12 +23,12 @@ entry_points:
         type: string
 
       min_price:
-        description: The min price for the prediction column
-        type: string
+        description: Minimum price value to filter the dataset. Rows with 'price' values less than this threshold will be removed.
+        type: float
 
       max_price:
-        description: The max price for the prediction column
-        type: string
+        description: Maximum price value to filter the dataset. Rows with 'price' values greater than this threshold will be removed.
+        type: float
 
 
     command: >-
